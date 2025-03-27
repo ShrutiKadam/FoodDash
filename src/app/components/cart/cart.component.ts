@@ -1,50 +1,43 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { CartService, CartItem } from '../../services/cart.service';
+import { FoodService, FoodItem } from '../../services/food.service';
 
 @Component({
   selector: 'app-cart',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './cart.component.html',
-  styleUrls: ['./cart.component.scss']
+  styleUrls: ['./cart.component.scss'],
+  imports: [CommonModule],
+  standalone: true
 })
 export class CartComponent implements OnInit {
-  cartItems: CartItem[] = [];
-  total = 0;
+  cartItems: FoodItem[] = [];
 
   constructor(
-    private cartService: CartService,
+    private foodService: FoodService,
     private router: Router
-  ) {}
+  ) { }
 
-  ngOnInit() {
-    this.cartService.cart$.subscribe(items => {
+  ngOnInit(): void {
+    this.cartItems = this.foodService.getCartItems();
+    this.foodService.cartItems$.subscribe(items => {
       this.cartItems = items;
     });
-
-    this.cartService.total$.subscribe(total => {
-      this.total = total;
-    });
   }
 
-  updateQuantity(item: CartItem, change: number) {
-    const newQuantity = item.quantity + change;
-    if (newQuantity >= 0) {
-      this.cartService.updateQuantity(item.id, newQuantity);
-    }
+  updateQuantity(item: FoodItem, change: number): void {
+    this.foodService.updateQuantity(item, change);
   }
 
-  removeItem(itemId: number) {
-    this.cartService.removeFromCart(itemId);
+  removeFromCart(itemId: number): void {
+    this.foodService.removeFromCart(itemId);
   }
 
-  continueShopping() {
-    this.router.navigate(['/food-list']);
+  getCartTotal(): number {
+    return this.foodService.getCartTotal();
   }
 
-  proceedToPayment() {
-    this.router.navigate(['/payment']);
+  goBack(): void {
+    this.router.navigate(['/menu']);
   }
 }

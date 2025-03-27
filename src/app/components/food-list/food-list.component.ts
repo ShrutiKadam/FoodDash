@@ -2,40 +2,46 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FoodService, FoodItem } from '../../services/food.service';
-import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-food-list',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './food-list.component.html',
-  styleUrls: ['./food-list.component.scss']
+  styleUrls: ['./food-list.component.scss'],
+  imports: [CommonModule],
+  standalone: true
 })
 export class FoodListComponent implements OnInit {
-  foods: FoodItem[] = [];
+  foodItems: FoodItem[] = [];
+  filteredFoodItems: FoodItem[] = [];
   cartItemCount = 0;
+  categories: string[] = ['All', 'Indian', 'Pizza', 'Burger', 'Sandwich'];
+  selectedCategory: string = 'All';
 
   constructor(
     private foodService: FoodService,
-    private cartService: CartService,
     private router: Router
-  ) {}
+  ) { }
 
-  ngOnInit() {
-    this.foodService.getFoods().subscribe(foods => {
-      this.foods = foods;
-    });
-
-    this.cartService.cart$.subscribe(items => {
-      this.cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
+  ngOnInit(): void {
+    this.foodItems = this.foodService.getFoodItems();
+    this.filteredFoodItems = this.foodItems;
+    this.foodService.cartItems$.subscribe(items => {
+      this.cartItemCount = items.reduce((count, item) => count + (item.quantity || 1), 0);
     });
   }
 
-  addToCart(food: FoodItem) {
-    this.cartService.addToCart(food);
+  filterByCategory(category: string): void {
+    this.selectedCategory = category;
+    this.filteredFoodItems = category === 'All' 
+      ? this.foodItems
+      : this.foodItems.filter(item => item.category === category);
   }
 
-  viewCart() {
+  addToCart(item: FoodItem): void {
+    this.foodService.addToCart(item);
+  }
+
+  viewCart(): void {
     this.router.navigate(['/cart']);
   }
 }

@@ -14,7 +14,7 @@ export class AuthService {
   login(username: string, password: string): boolean {
     if (username === 'shruti' && password === 'Magic') {
       this.isAuthenticatedSubject.next(true);
-      this.router.navigate(['/food-list']);
+      this.router.navigate(['/menu']);
       return true;
     }
     return false;
@@ -23,5 +23,9 @@ export class AuthService {
   logout() {
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/login']);
+  }
+
+  isAuthenticated(): boolean {
+    return this.isAuthenticatedSubject.getValue();
   }
 }
