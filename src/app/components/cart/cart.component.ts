@@ -48,4 +48,8 @@ export class CartComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/menu']);
   }
+
+  proceedToCheckout(): void {
+    this.router.navigate(['/payment']);
+  }
 }

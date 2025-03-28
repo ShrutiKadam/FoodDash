@@ -26,16 +26,21 @@ export class PaymentComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Subscribe to get initial total and any updates
     this.cartService.total$.subscribe(total => {
-      this.total = total;
+      this.total = total + 40; // Adding delivery fee
     });
   }
 
   onSubmit() {
-    // In a real application, you would handle payment processing here
-    alert('Payment successful! Thank you for your order.');
-    this.cartService.clearCart();
-    this.router.navigate(['/food-list']);
+    // Show confirmation dialog
+    const dialog = window.confirm('Payment successful! Thank you for your order.');
+    
+    // Clear cart and redirect only after user clicks OK
+    if (dialog) {
+      this.cartService.clearCart();
+      this.router.navigate(['/menu']);
+    }
   }
 
   goBack() {
