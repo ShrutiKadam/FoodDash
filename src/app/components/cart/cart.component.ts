@@ -37,6 +37,14 @@ export class CartComponent implements OnInit {
     return this.foodService.getCartTotal();
   }
 
+  getSubtotal(): number {
+    return this.cartItems.reduce((total, item) => total + (item.price * (item.quantity || 1)), 0);
+  }
+
+  getTotal(): number {
+    return this.getSubtotal() + 40; // Adding delivery fee
+  }
+
   goBack(): void {
     this.router.navigate(['/menu']);
   }

@@ -21,7 +21,7 @@
           </div>
           <div class="item-actions">
             <div class="quantity-controls">
-              <button (click)="updateQuantity(item, -1)">
+              <button [disabled]="(item.quantity || 1) <= 1" (click)="updateQuantity(item, -1)">
                 <i class="fa-solid fa-minus"></i>
               </button>
               <span>{{ item.quantity || 1 }}</span>
@@ -37,27 +37,23 @@
       </div>
 
       <div class="cart-summary">
-        <div class="summary-header">
-          <h2>Order Summary</h2>
+        <h2>Order Summary</h2>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>₹{{ getSubtotal() }}</span>
         </div>
-        <div class="summary-content">
-          <div class="summary-row">
-            <span>Subtotal</span>
-            <span>₹{{ getCartTotal() }}</span>
-          </div>
-          <div class="summary-row">
-            <span>Delivery Fee</span>
-            <span>₹50</span>
-          </div>
-          <div class="summary-row total">
-            <span>Total</span>
-            <span>₹{{ getCartTotal() + 50 }}</span>
-          </div>
-          <button class="checkout-button">
-            <i class="fa-solid fa-shopping-bag"></i>
-            Proceed to Checkout
-          </button>
+        <div class="summary-row">
+          <span>Delivery Fee</span>
+          <span>₹40</span>
         </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span>₹{{ getTotal() }}</span>
+        </div>
+        <button class="checkout-button">
+          <i class="fa-solid fa-credit-card"></i>
+          Proceed to Checkout
+        </button>
       </div>
     </div>
 
@@ -66,7 +62,10 @@
         <i class="fa-solid fa-cart-shopping"></i>
         <h2>Your cart is empty</h2>
         <p>Add some delicious items from the menu</p>
-        <button class="browse-button" (click)="goBack()">Browse Menu</button>
+        <button class="browse-button" (click)="goBack()">
+          <i class="fa-solid fa-utensils"></i>
+          Browse Menu
+        </button>
       </div>
     </ng-template>
   </div>
